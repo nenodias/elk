@@ -1,0 +1,69 @@
+version: '3'
+
+services:
+  elasticsearch:
+    image: elasticsearch:7.12.1
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    networks:
+      - elastic-network
+
+  kibana:
+    image: kibana:7.12.1
+    environment:
+      ELASTIC_HOST: elk_elasticsearch_1:9200
+      XPACK_SECURITY_ENABLED: "false"
+      XPACK_REPORTING_ENABLED: "false"
+      XPACK_MONITORING_ENABLED: "false"
+    ports:
+      - "5601:5601"
+    volumes: 
+      - "./config/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml:ro"
+    depends_on:
+      - elasticsearch
+    links:
+      - "elasticsearch"
+    networks:
+      - elastic-network
+
+  logstash:
+    image: logstash:7.12.1
+    environment: 
+      XPACK_MONITORING_ENABLED: "false"
+    ports:
+      - "5000:5000"
+      - "5044:5044"
+      - "9600:9600"
+      - "12201:12201"
+    links:
+      - "elasticsearch"
+    depends_on:
+      - elasticsearch
+      - kibana
+    volumes: 
+      - "./config/logstash/pipeline/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro"
+      - "./config/logstash/logstash.yml:/etc/logstash/config/logstash.yml:rw"
+    networks:
+      - elastic-network
+  filebeat:
+    image: elastic/filebeat:7.12.1
+    env_file:
+      - "./config/filebeat/filebeat.env"
+    links:
+      - "logstash"
+      - "elasticsearch"
+    depends_on:
+      - logstash
+      - elasticsearch
+      - kibana
+    volumes: 
+      - "./config/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"
+      - "./files:/usr/share/filebeat/files"
+    networks:
+      - elastic-network
+networks: 
+  elastic-network:
+    driver: bridge

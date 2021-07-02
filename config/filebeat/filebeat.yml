@@ -1,0 +1,19 @@
+filebeat.inputs:
+- type: log
+  source: 'FileBeat'
+  paths:
+  - /usr/share/filebeat/files/*
+  enabled: true
+
+filebeat.modules:
+- module: elasticsearch
+- module: logstash
+- module: nginx
+- module: mysql
+- module: system
+
+setup.kibana:
+  host: "elk_kibana_1:5601"
+
+output.logstash:
+  hosts: ["elk_logstash_1:5044"]

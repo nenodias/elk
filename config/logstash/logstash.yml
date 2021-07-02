@@ -1,0 +1,4 @@
+http.host: 0.0.0.0
+xpack.monitoring.elasticsearch.hosts:
+- http://elk_elasticsearch_1:9200
+xpack.monitoring.enabled: false
