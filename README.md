@@ -3,6 +3,7 @@ ELK Stack no docker-compose para análise de logs
 
 ## Initial
 ### filebeat.yml must be with admin permission
+sudo chown -R config/filebeat/filebeat.yml
 
 ### Create a docker network before
 docker network create \
