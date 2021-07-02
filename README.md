@@ -27,5 +27,7 @@ files
 ### Filtragem dos campos
 Alterar o arquivo config/logstash.conf
 Usar https://grokdebugger.com/
+
 https://grokdebug.herokuapp.com/patterns#
+
 https://regex101.com/
