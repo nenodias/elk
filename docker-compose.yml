@@ -2,6 +2,7 @@ version: '3'
 
 services:
   elasticsearch:
+    hostname: elk_elasticsearch_1
     image: elasticsearch:7.12.1
     environment:
       - discovery.type=single-node
@@ -12,6 +13,7 @@ services:
       - elastic-network
 
   kibana:
+    hostname: elk_kibana_1
     image: kibana:7.12.1
     environment:
       ELASTIC_HOST: elk_elasticsearch_1:9200
@@ -30,6 +32,7 @@ services:
       - elastic-network
 
   logstash:
+    hostname: elk_logstash_1
     image: logstash:7.12.1
     environment: 
       XPACK_MONITORING_ENABLED: "false"
@@ -49,6 +52,7 @@ services:
     networks:
       - elastic-network
   filebeat:
+    hostname: elk_filebeat_1
     image: elastic/filebeat:7.12.1
     env_file:
       - "./config/filebeat/filebeat.env"
